@@ -59,10 +59,10 @@ export function buildTrackGeometry(def: TrackDef): TrackGeometry {
   const pts: TrackControlPoint[] = [];
 
   for (let i = 0; i < n; i++) {
-    const p0 = cps[(i - 1 + n) % n];
-    const p1 = cps[i];
-    const p2 = cps[(i + 1) % n];
-    const p3 = cps[(i + 2) % n];
+    const p0 = cps[(i - 1 + n) % n]!;
+    const p1 = cps[i]!;
+    const p2 = cps[(i + 1) % n]!;
+    const p3 = cps[(i + 2) % n]!;
     for (let j = 0; j < SAMPLES_PER_SEGMENT; j++) {
       pts.push(catmullRom(p0, p1, p2, p3, j / SAMPLES_PER_SEGMENT));
     }
@@ -82,35 +82,35 @@ export function buildTrackGeometry(def: TrackDef): TrackGeometry {
   let maxY = -Infinity;
 
   for (let i = 0; i < m; i++) {
-    x[i] = pts[i].x;
-    y[i] = pts[i].y;
-    minX = Math.min(minX, x[i]);
-    maxX = Math.max(maxX, x[i]);
-    minY = Math.min(minY, y[i]);
-    maxY = Math.max(maxY, y[i]);
+    x[i] = pts[i]!.x;
+    y[i] = pts[i]!.y;
+    minX = Math.min(minX, x[i]!);
+    maxX = Math.max(maxX, x[i]!);
+    minY = Math.min(minY, y[i]!);
+    maxY = Math.max(maxY, y[i]!);
   }
 
   let acc = 0;
   for (let i = 0; i < m; i++) {
     const j = (i + 1) % m;
-    const dx = x[j] - x[i];
-    const dy = y[j] - y[i];
+    const dx = x[j]! - x[i]!;
+    const dy = y[j]! - y[i]!;
     ds[i] = Math.hypot(dx, dy);
     heading[i] = Math.atan2(dy, dx);
     s[i] = acc;
-    acc += ds[i];
+    acc += ds[i]!;
   }
 
   // Curvature via circumradius of three consecutive samples.
   for (let i = 0; i < m; i++) {
     const a = (i - 1 + m) % m;
     const c = (i + 1) % m;
-    const ax = x[a];
-    const ay = y[a];
-    const bx = x[i];
-    const by = y[i];
-    const cx = x[c];
-    const cy = y[c];
+    const ax = x[a]!;
+    const ay = y[a]!;
+    const bx = x[i]!;
+    const by = y[i]!;
+    const cx = x[c]!;
+    const cy = y[c]!;
     const area = Math.abs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) * 0.5;
     const l1 = Math.hypot(bx - ax, by - ay);
     const l2 = Math.hypot(cx - bx, cy - by);
@@ -123,7 +123,7 @@ export function buildTrackGeometry(def: TrackDef): TrackGeometry {
   const ks = new Float64Array(m);
   for (let i = 0; i < m; i++) {
     let sum = 0;
-    for (let o = -3; o <= 3; o++) sum += k[(i + o + m) % m];
+    for (let o = -3; o <= 3; o++) sum += k[(i + o + m) % m]!;
     ks[i] = sum / 7;
   }
 
@@ -205,5 +205,5 @@ export const TRACKS: TrackDef[] = [
 ];
 
 export function trackById(id: string): TrackDef {
-  return TRACKS.find((t) => t.id === id) ?? TRACKS[0];
+  return TRACKS.find((t) => t.id === id) ?? TRACKS[0]!;
 }
