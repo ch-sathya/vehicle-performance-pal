@@ -159,10 +159,14 @@ function idealAt(sim: Simulator, s: number) {
 
 function summarise(setup: Record<string, number>) {
   const bits: string[] = [];
-  if (setup.frontWing !== undefined) bits.push(`FW ${setup.frontWing}`);
-  if (setup.rearWing !== undefined) bits.push(`RW ${setup.rearWing}`);
-  if (setup.rideHeight !== undefined) bits.push(`RH ${setup.rideHeight}`);
-  if (setup.fuelLoad !== undefined) bits.push(`${setup.fuelLoad} kg`);
+  const add = (key: string, label: string) => {
+    const v = setup[key];
+    if (v !== undefined) bits.push(`${label} ${v}`);
+  };
+  add("frontWing", "FW");
+  add("rearWing", "RW");
+  add("rideHeight", "RH");
+  add("fuelLoad", "Fuel");
   return bits.join(" · ");
 }
 
