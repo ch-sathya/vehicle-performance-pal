@@ -343,10 +343,11 @@ export class Simulator {
   /** World position + heading for rendering. */
   pose() {
     const s = this.s % this.geom.length;
-    return {
-      x: sampleAt(this.geom.x, this.geom, s),
-      y: sampleAt(this.geom.y, this.geom, s),
-      heading: sampleAt(this.geom.heading, this.geom, s),
-    };
+    const x = sampleAt(this.geom.x, this.geom, s);
+    const y = sampleAt(this.geom.y, this.geom, s);
+    const ahead = (s + 6) % this.geom.length;
+    const x2 = sampleAt(this.geom.x, this.geom, ahead);
+    const y2 = sampleAt(this.geom.y, this.geom, ahead);
+    return { x, y, heading: Math.atan2(y2 - y, x2 - x) };
   }
 }
