@@ -116,8 +116,8 @@ export function PerformancePanel({
                 key={k}
                 type="monotone"
                 dataKey={k}
-                name={CORNERS[i]}
-                stroke={["#ffb020", "#ffd98a", "#4fc3f7", "#8ba0ad"][i]}
+                name={CORNERS[i] ?? ""}
+                stroke={["#ffb020", "#ffd98a", "#4fc3f7", "#8ba0ad"][i] ?? "#ffb020"}
                 strokeWidth={1.4}
                 dot={false}
               />
