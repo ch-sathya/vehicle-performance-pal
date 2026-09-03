@@ -14,26 +14,53 @@ import * as THREE from "three";
 import { cn } from "@/lib/utils";
 import type { PartDef, VehicleDef } from "@/lib/telemetry/vehicles";
 
+const BODY_COLORS: Record<string, string> = {
+  amber: "#c2410c",
+  sky: "#1e4d6b",
+  emerald: "#1f4d3d",
+};
+
 function CarModel({ vehicle, setup }: { vehicle: VehicleDef; setup: Record<string, number> }) {
   const { scene } = useGLTF(vehicle.model);
   const cloned = useMemo(() => {
     const c = scene.clone(true);
+    const body = new THREE.MeshStandardMaterial({
+      color: BODY_COLORS[vehicle.accent] ?? "#2b3138",
+      metalness: 0.55,
+      roughness: 0.35,
+    });
+    const rubber = new THREE.MeshStandardMaterial({
+      color: "#15181b",
+      metalness: 0.05,
+      roughness: 0.85,
+    });
     c.traverse((o) => {
       const m = o as THREE.Mesh;
       if (m.isMesh) {
         m.castShadow = true;
         m.receiveShadow = true;
+        const isWheel = /wheel|tyre|tire/i.test(m.name) || /wheel/i.test(m.parent?.name ?? "");
+        m.material = isWheel ? rubber : body;
       }
     });
     return c;
-  }, [scene]);
+  }, [scene, vehicle.accent]);
 
   const rideDefault = vehicle.setup.find((s) => s.id === "rideHeight")?.default ?? 40;
   const ride = setup["rideHeight"] ?? rideDefault;
   const dy = (ride - rideDefault) / 900;
+  const camber = setup["camber"] ?? 0;
 
-  return <primitive object={cloned} rotation={[0, Math.PI, 0]} position={[0, dy, 0]} scale={vehicle.modelScale} />;
+  return (
+    <primitive
+      object={cloned}
+      rotation={[0, Math.PI, THREE.MathUtils.degToRad(camber * 0.15)]}
+      position={[0, dy, 0]}
+      scale={vehicle.modelScale}
+    />
+  );
 }
+
 
 function WingPlate({
   position,
@@ -84,8 +111,13 @@ function Hotspot({
           onSelect(part.id);
         }}
       >
-        <sphereGeometry args={[show ? 0.07 : 0.05, 16, 16]} />
-        <meshBasicMaterial color={active ? "#ffb020" : hover ? "#ffd98a" : "#8ba0ad"} />
+        <sphereGeometry args={[show ? 0.065 : 0.045, 16, 16]} />
+        <meshBasicMaterial
+          color={active ? "#ffb020" : hover ? "#ffd98a" : "#ffb020"}
+          transparent
+          opacity={show ? 1 : 0.6}
+        />
+
       </mesh>
       {show ? (
         <Html center distanceFactor={4.5} zIndexRange={[20, 0]}>
