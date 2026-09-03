@@ -18,22 +18,43 @@ function CarModel({ vehicle, setup }: { vehicle: VehicleDef; setup: Record<strin
   const { scene } = useGLTF(vehicle.model);
   const cloned = useMemo(() => {
     const c = scene.clone(true);
+    const body = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(vehicle.accent).multiplyScalar(0.85),
+      metalness: 0.55,
+      roughness: 0.35,
+    });
+    const rubber = new THREE.MeshStandardMaterial({
+      color: "#15181b",
+      metalness: 0.05,
+      roughness: 0.85,
+    });
     c.traverse((o) => {
       const m = o as THREE.Mesh;
       if (m.isMesh) {
         m.castShadow = true;
         m.receiveShadow = true;
+        const isWheel = /wheel|tyre|tire/i.test(m.name) || /wheel/i.test(m.parent?.name ?? "");
+        m.material = isWheel ? rubber : body;
       }
     });
     return c;
-  }, [scene]);
+  }, [scene, vehicle.accent]);
 
   const rideDefault = vehicle.setup.find((s) => s.id === "rideHeight")?.default ?? 40;
   const ride = setup["rideHeight"] ?? rideDefault;
   const dy = (ride - rideDefault) / 900;
+  const camber = setup["camber"] ?? 0;
 
-  return <primitive object={cloned} rotation={[0, Math.PI, 0]} position={[0, dy, 0]} scale={vehicle.modelScale} />;
+  return (
+    <primitive
+      object={cloned}
+      rotation={[0, Math.PI, THREE.MathUtils.degToRad(camber * 0.15)]}
+      position={[0, dy, 0]}
+      scale={vehicle.modelScale}
+    />
+  );
 }
+
 
 function WingPlate({
   position,
