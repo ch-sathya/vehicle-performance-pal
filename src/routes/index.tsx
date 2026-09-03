@@ -261,7 +261,6 @@ function Dashboard() {
               partId={selectedPart}
               sample={s}
               setup={sim.setup}
-              onChange={setParam}
               onClose={() => setSelectedPart(null)}
             />
           </div>

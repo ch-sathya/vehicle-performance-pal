@@ -12,14 +12,12 @@ export function PartPanel({
   partId,
   sample,
   setup,
-  onChange,
   onClose,
 }: {
   vehicle: VehicleDef;
   partId: string | null;
   sample: TelemetrySample | null;
   setup: Record<string, number>;
-  onChange: (id: string, value: number) => void;
   onClose: () => void;
 }) {
   const part = vehicle.parts.find((p) => p.id === partId);
