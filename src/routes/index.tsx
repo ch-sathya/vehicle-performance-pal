@@ -27,6 +27,12 @@ const TITLE = "Apex Telemetry — 3D Vehicle Performance Assistant";
 const DESC =
   "Live 3D vehicle telemetry: inspect every named part and sensor on an F1 car, tune the setup, and compare lap times, sectors, tyre and brake data on a simulated circuit.";
 
+const TABS = [
+  { v: "track", label: "Track" },
+  { v: "performance", label: "Performance" },
+  { v: "results", label: "Results" },
+] as const;
+
 export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
