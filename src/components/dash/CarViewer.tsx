@@ -14,12 +14,18 @@ import * as THREE from "three";
 import { cn } from "@/lib/utils";
 import type { PartDef, VehicleDef } from "@/lib/telemetry/vehicles";
 
+const BODY_COLORS: Record<string, string> = {
+  amber: "#c2410c",
+  sky: "#1e4d6b",
+  emerald: "#1f4d3d",
+};
+
 function CarModel({ vehicle, setup }: { vehicle: VehicleDef; setup: Record<string, number> }) {
   const { scene } = useGLTF(vehicle.model);
   const cloned = useMemo(() => {
     const c = scene.clone(true);
     const body = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(vehicle.accent).multiplyScalar(0.85),
+      color: BODY_COLORS[vehicle.accent] ?? "#2b3138",
       metalness: 0.55,
       roughness: 0.35,
     });
