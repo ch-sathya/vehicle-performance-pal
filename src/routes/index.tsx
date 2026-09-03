@@ -170,19 +170,16 @@ function Dashboard() {
           <section className="bg-background">
             <Tabs defaultValue="track" className="gap-0">
               <TabsList className="h-auto w-full justify-start rounded-none border-b border-border bg-transparent p-0">
-                {[
-                  ["track", "Track"],
-                  ["performance", "Performance"],
-                  ["results", "Results"],
-                ].map(([v, label]) => (
+                {TABS.map((t) => (
                   <TabsTrigger
-                    key={v}
-                    value={v}
+                    key={t.v}
+                    value={t.v}
                     className="rounded-none border-b-2 border-transparent px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary"
                   >
-                    {label}
+                    {t.label}
                   </TabsTrigger>
                 ))}
+
               </TabsList>
 
               <TabsContent value="track" className="m-0">
