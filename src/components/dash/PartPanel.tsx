@@ -1,4 +1,4 @@
-import { Slider } from "@/components/ui/slider";
+import type { ReactNode } from "react";
 import {
   formatSensor,
   sensorById,
@@ -94,31 +94,30 @@ export function PartPanel({
 
         {part.setupIds.length ? (
           <>
-            <SectionLabel>Adjustments</SectionLabel>
-            {part.setupIds.map((id) => {
-              const def = setupById(vehicle, id);
-              if (!def) return null;
-              const value = setup[id] ?? def.default;
-              return (
-                <div key={id} className="border-b border-border/50 py-2">
-                  <div className="flex items-baseline justify-between gap-2">
+            <SectionLabel>Linked setup parameters</SectionLabel>
+            <p className="mb-1.5 text-[10px] leading-snug text-muted-foreground">
+              Adjust these in the setup sheet below — they are highlighted while this part is
+              selected.
+            </p>
+            <ul className="space-y-px">
+              {part.setupIds.map((id) => {
+                const def = setupById(vehicle, id);
+                if (!def) return null;
+                const value = setup[id] ?? def.default;
+                return (
+                  <li
+                    key={id}
+                    className="flex items-baseline justify-between gap-2 border-b border-border/50 py-1.5"
+                  >
                     <span className="text-[11px] text-foreground">{def.name}</span>
                     <span className="font-mono text-[12px] tabular-nums text-primary">
                       {value}
                       <span className="ml-0.5 text-[10px] text-muted-foreground">{def.unit}</span>
                     </span>
-                  </div>
-                  <Slider
-                    className="mt-2"
-                    min={def.min}
-                    max={def.max}
-                    step={def.step}
-                    value={[value]}
-                    onValueChange={(v) => onChange(id, v[0] ?? def.default)}
-                  />
-                </div>
-              );
-            })}
+                  </li>
+                );
+              })}
+            </ul>
           </>
         ) : (
           <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
@@ -148,7 +147,7 @@ function Header({ title, onClose }: { title: string; onClose?: () => void }) {
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <h4 className="mt-4 mb-1 font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
       {children}
