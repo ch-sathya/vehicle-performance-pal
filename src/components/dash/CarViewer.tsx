@@ -105,8 +105,13 @@ function Hotspot({
           onSelect(part.id);
         }}
       >
-        <sphereGeometry args={[show ? 0.07 : 0.05, 16, 16]} />
-        <meshBasicMaterial color={active ? "#ffb020" : hover ? "#ffd98a" : "#8ba0ad"} />
+        <sphereGeometry args={[show ? 0.065 : 0.045, 16, 16]} />
+        <meshBasicMaterial
+          color={active ? "#ffb020" : hover ? "#ffd98a" : "#ffb020"}
+          transparent
+          opacity={show ? 1 : 0.6}
+        />
+
       </mesh>
       {show ? (
         <Html center distanceFactor={4.5} zIndexRange={[20, 0]}>
