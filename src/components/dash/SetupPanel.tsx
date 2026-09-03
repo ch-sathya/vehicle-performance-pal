@@ -39,7 +39,27 @@ export function SetupPanel({
         <Stat label="Ideal lap" value={fmtLap(idealLap)} />
         <Stat label="Top speed" value={`${Math.round(topSpeed * 3.6)} km/h`} />
         <Stat label="Mass" value={`${Math.round(derived.mass)} kg`} />
+        <Stat label="Downforce" value={`${Math.round(derived.downforceCoef * 100)} idx`} />
+        <Stat label="Drag" value={`${Math.round(derived.dragCoef * 100)} idx`} />
+        <Stat label="Grip" value={derived.gripFactor.toFixed(2)} />
       </dl>
+
+      <div className="flex items-center gap-1 border-b border-border px-3 py-2">
+        <span className="mr-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+          preset
+        </span>
+        {PRESETS.map((preset) => (
+          <button
+            key={preset.id}
+            onClick={() => applyPreset(vehicle, preset.id, onChange)}
+            className="rounded-sm border border-border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          >
+            {preset.label}
+          </button>
+        ))}
+      </div>
+
+
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
         {GROUPS.map((g) => {
