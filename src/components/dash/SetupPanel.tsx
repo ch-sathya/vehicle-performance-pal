@@ -39,9 +39,9 @@ export function SetupPanel({
         <Stat label="Ideal lap" value={fmtLap(idealLap)} />
         <Stat label="Top speed" value={`${Math.round(topSpeed * 3.6)} km/h`} />
         <Stat label="Mass" value={`${Math.round(derived.mass)} kg`} />
-        <Stat label="Downforce" value={`${Math.round(derived.downforceCoef * 100)} idx`} />
-        <Stat label="Drag" value={`${Math.round(derived.dragCoef * 100)} idx`} />
-        <Stat label="Grip" value={derived.gripFactor.toFixed(2)} />
+        <Stat label="Aero index" value={derived.aeroFactor.toFixed(2)} />
+        <Stat label="Grip index" value={derived.gripFactor.toFixed(2)} />
+        <Stat label="Wear rate" value={`${(derived.wearRate * 100).toFixed(1)} %/lap`} />
       </dl>
 
       <div className="flex items-center gap-1 border-b border-border px-3 py-2">
@@ -135,4 +135,36 @@ function fmtLap(t: number) {
   if (!Number.isFinite(t)) return "--:--.---";
   const m = Math.floor(t / 60);
   return `${m}:${(t - m * 60).toFixed(3).padStart(6, "0")}`;
+}
+
+const PRESETS = [
+  { id: "lowDrag", label: "low drag" },
+  { id: "balanced", label: "balanced" },
+  { id: "maxDown", label: "max downforce" },
+] as const;
+
+type PresetId = (typeof PRESETS)[number]["id"];
+
+/** Position within each parameter's range, per preset. 0 = min, 1 = max. */
+const PRESET_BIAS: Record<PresetId, Record<string, number>> = {
+  lowDrag: { frontWing: 0.2, rearWing: 0.15, rideHeight: 0.55, ers: 0.85, finalDrive: 0.25 },
+  balanced: {},
+  maxDown: { frontWing: 0.85, rearWing: 0.9, rideHeight: 0.2, ers: 0.6, finalDrive: 0.7 },
+};
+
+function applyPreset(
+  vehicle: VehicleDef,
+  id: PresetId,
+  onChange: (id: string, value: number) => void,
+) {
+  const bias = PRESET_BIAS[id];
+  for (const p of vehicle.setup) {
+    const b = bias[p.id];
+    if (b === undefined) {
+      onChange(p.id, p.default);
+      continue;
+    }
+    const raw = p.min + (p.max - p.min) * b;
+    onChange(p.id, Math.round(raw / p.step) * p.step);
+  }
 }
