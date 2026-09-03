@@ -42,37 +42,63 @@ export function SetupPanel({
       </dl>
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
-        {vehicle.setup.map((p) => {
-          const value = setup[p.id] ?? p.default;
-          const on = highlight?.includes(p.id);
+        {GROUPS.map((g) => {
+          const params = vehicle.setup.filter((p) => groupOf(p.id) === g);
+          if (!params.length) return null;
           return (
-            <div
-              key={p.id}
-              className={`border-b border-border/60 py-2.5 ${on ? "-mx-1 rounded-sm bg-primary/10 px-1" : ""}`}
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="text-[12px] text-foreground">{p.name}</span>
-                <span className="font-mono text-[12px] tabular-nums text-primary">
-                  {value}
-                  <span className="ml-0.5 text-[10px] text-muted-foreground">{p.unit}</span>
-                </span>
-              </div>
-              <Slider
-                className="mt-2"
-                min={p.min}
-                max={p.max}
-                step={p.step}
-                value={[value]}
-                onValueChange={(v) => onChange(p.id, v[0] ?? p.default)}
-              />
-              <p className="mt-1.5 text-[10px] leading-snug text-muted-foreground">{p.note}</p>
-            </div>
+            <section key={g} className="mb-2">
+              <h3 className="sticky top-0 z-10 -mx-3 mb-1 bg-background px-3 py-1 font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
+                {g}
+              </h3>
+              {params.map((p) => {
+                const value = setup[p.id] ?? p.default;
+                const on = highlight?.includes(p.id);
+                return (
+                  <div
+                    key={p.id}
+                    className={`border-b border-border/60 py-2.5 ${on ? "-mx-1 rounded-sm bg-primary/10 px-1" : ""}`}
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="text-[12px] text-foreground">{p.name}</span>
+                      <span className="font-mono text-[12px] tabular-nums text-primary">
+                        {value}
+                        <span className="ml-0.5 text-[10px] text-muted-foreground">{p.unit}</span>
+                      </span>
+                    </div>
+                    <Slider
+                      className="mt-2"
+                      min={p.min}
+                      max={p.max}
+                      step={p.step}
+                      value={[value]}
+                      onValueChange={(v) => onChange(p.id, v[0] ?? p.default)}
+                    />
+                    <div className="mt-1 flex justify-between font-mono text-[9px] tabular-nums text-muted-foreground/70">
+                      <span>{p.min}</span>
+                      <span>{p.max}</span>
+                    </div>
+                    <p className="mt-1 text-[10px] leading-snug text-muted-foreground">{p.note}</p>
+                  </div>
+                );
+              })}
+            </section>
           );
         })}
       </div>
     </div>
   );
 }
+
+const GROUPS = ["Aerodynamics", "Chassis & tyres", "Braking", "Drivetrain", "Energy & fuel"] as const;
+
+function groupOf(id: string): (typeof GROUPS)[number] {
+  if (/wing|aero|drs/i.test(id)) return "Aerodynamics";
+  if (/brake/i.test(id)) return "Braking";
+  if (/diff|drive|gear|ratio/i.test(id)) return "Drivetrain";
+  if (/fuel|ers|battery|energy/i.test(id)) return "Energy & fuel";
+  return "Chassis & tyres";
+}
+
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
