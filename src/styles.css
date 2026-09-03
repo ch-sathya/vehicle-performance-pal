@@ -141,5 +141,13 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: "Barlow", ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "tnum" 1;
+  }
+
+  .font-mono,
+  code,
+  pre {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   }
 }
