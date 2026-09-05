@@ -41,7 +41,7 @@ export function SetupPanel({
         <Stat label="Mass" value={`${Math.round(derived.mass)} kg`} />
         <Stat label="Aero index" value={derived.aeroFactor.toFixed(2)} />
         <Stat label="Grip index" value={derived.gripFactor.toFixed(2)} />
-        <Stat label="Wear rate" value={`${(derived.wearRate * 100).toFixed(1)} %/lap`} />
+        <Stat label="Wear rate" value={`${derived.wearRate.toFixed(2)}×`} />
       </dl>
 
       <div className="flex items-center gap-1 border-b border-border px-3 py-2">
