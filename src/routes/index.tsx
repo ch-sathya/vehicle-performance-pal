@@ -71,8 +71,8 @@ function Dashboard() {
   const s = sim.sample;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:h-screen lg:min-h-0 lg:overflow-hidden">
+      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
         <div>
           <h1 className="font-mono text-[13px] uppercase tracking-[0.3em] text-primary">
             Apex Telemetry
@@ -117,7 +117,7 @@ function Dashboard() {
           ))}
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 lg:ml-auto">
           <div className="text-right">
             <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
               lap {s ? Math.floor(s.t / Math.max(1, sim.profile.lapTime)) + 1 : 1} · running
@@ -156,9 +156,9 @@ function Dashboard() {
         </div>
       </header>
 
-      <main className="grid flex-1 gap-px bg-border lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="flex min-w-0 flex-col gap-px bg-border">
-          <section className="relative h-[46vh] min-h-[320px] bg-background">
+      <main className="grid flex-1 gap-px bg-border lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_340px] lg:overflow-hidden">
+        <div className="flex min-w-0 flex-col gap-px bg-border lg:min-h-0 lg:overflow-y-auto">
+          <section className="relative h-[46vh] min-h-[320px] shrink-0 bg-background">
             <CarViewer
               vehicle={sim.vehicle}
               setup={sim.setup}
@@ -254,8 +254,8 @@ function Dashboard() {
           </section>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-px bg-border">
-          <div className="max-h-[52vh] min-h-[260px] bg-background">
+        <aside className="flex min-w-0 flex-col gap-px bg-border lg:min-h-0 lg:overflow-hidden">
+          <div className="max-h-[52vh] min-h-[260px] shrink-0 overflow-y-auto bg-background">
             <PartPanel
               vehicle={sim.vehicle}
               partId={selectedPart}
@@ -264,7 +264,7 @@ function Dashboard() {
               onClose={() => setSelectedPart(null)}
             />
           </div>
-          <div className="flex-1 bg-background">
+          <div className="min-h-[420px] flex-1 bg-background lg:min-h-0">
             <SetupPanel
               vehicle={sim.vehicle}
               setup={sim.setup}
