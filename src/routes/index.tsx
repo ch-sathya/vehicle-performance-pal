@@ -71,8 +71,8 @@ function Dashboard() {
   const s = sim.sample;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:h-screen lg:min-h-0 lg:overflow-hidden">
+      <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
         <div>
           <h1 className="font-mono text-[13px] uppercase tracking-[0.3em] text-primary">
             Apex Telemetry
