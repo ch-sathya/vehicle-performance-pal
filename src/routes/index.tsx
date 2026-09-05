@@ -264,7 +264,7 @@ function Dashboard() {
               onClose={() => setSelectedPart(null)}
             />
           </div>
-          <div className="flex-1 bg-background">
+          <div className="min-h-[420px] flex-1 bg-background lg:min-h-0">
             <SetupPanel
               vehicle={sim.vehicle}
               setup={sim.setup}
