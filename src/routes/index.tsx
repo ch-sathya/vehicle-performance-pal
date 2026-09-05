@@ -117,7 +117,7 @@ function Dashboard() {
           ))}
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 lg:ml-auto">
           <div className="text-right">
             <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
               lap {s ? Math.floor(s.t / Math.max(1, sim.profile.lapTime)) + 1 : 1} · running
