@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, useGLTF } from "@react-three/drei";
-import { Suspense, useMemo, useRef, type RefObject } from "react";
+import { Environment, Lightformer, OrbitControls, useGLTF } from "@react-three/drei";
+import { Suspense, useMemo, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 
 import type { TrackGeometry } from "@/lib/telemetry/track";
