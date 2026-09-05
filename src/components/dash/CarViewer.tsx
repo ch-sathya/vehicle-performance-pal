@@ -54,7 +54,7 @@ function CarModel({ vehicle, setup }: { vehicle: VehicleDef; setup: Record<strin
   return (
     <primitive
       object={cloned}
-      rotation={[0, Math.PI, THREE.MathUtils.degToRad(camber * 0.15)]}
+      rotation={[0, 0, THREE.MathUtils.degToRad(camber * 0.15)]}
       position={[0, dy, 0]}
       scale={vehicle.modelScale}
     />
