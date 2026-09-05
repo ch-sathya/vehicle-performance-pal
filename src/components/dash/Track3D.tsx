@@ -96,9 +96,27 @@ function Car({
 
   return (
     <group ref={ref}>
-      <primitive object={model} rotation={[0, Math.PI, 0]} scale={vehicle.modelScale * 1.6} />
+      <primitive object={model} scale={vehicle.modelScale * 1.6} />
     </group>
   );
+}
+
+/** Keeps the orbit target glued to the car so free-look stays centred on it. */
+function OrbitFollow({
+  poseRef,
+  controls,
+}: {
+  poseRef: RefObject<{ x: number; y: number; heading: number }>;
+  controls: RefObject<{ target: THREE.Vector3; update: () => void } | null>;
+}) {
+  useFrame(() => {
+    const p = poseRef.current;
+    const c = controls.current;
+    if (!p || !c) return;
+    c.target.set(p.x * SCALE, 0.5, -p.y * SCALE);
+    c.update();
+  });
+  return null;
 }
 
 export function Track3D({
@@ -110,25 +128,61 @@ export function Track3D({
   vehicle: VehicleDef;
   poseRef: RefObject<{ x: number; y: number; heading: number }>;
 }) {
+  const [mode, setMode] = useState<"chase" | "orbit">("chase");
+  const controls = useRef<any>(null);
+
   return (
-    <Canvas shadows camera={{ position: [0, 14, 18], fov: 55 }} dpr={[1, 1.5]}>
-      <color attach="background" args={["#0a0c0e"]} />
-      <fog attach="fog" args={["#0a0c0e", 30, 130]} />
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[20, 30, 10]} intensity={1.6} castShadow />
-      <Suspense fallback={null}>
-        <Environment>
-          <Lightformer intensity={1.8} position={[0, 12, 0]} scale={[30, 30, 1]} />
-          <Lightformer intensity={0.8} color="#ffb020" position={[-20, 4, 0]} rotation-y={Math.PI / 2} scale={[40, 3, 1]} />
-        </Environment>
-        <TrackSurface geom={geom} />
-        <Car vehicle={vehicle} poseRef={poseRef} chase />
-      </Suspense>
-      <mesh rotation-x={-Math.PI / 2} position={[0, -0.02, 0]} receiveShadow>
-        <planeGeometry args={[400, 400]} />
-        <meshStandardMaterial color="#141a16" roughness={1} />
-      </mesh>
-    </Canvas>
+    <div className="relative h-full w-full">
+      <Canvas shadows camera={{ position: [0, 14, 18], fov: 55 }} dpr={[1, 1.5]}>
+        <color attach="background" args={["#0a0c0e"]} />
+        <fog attach="fog" args={["#0a0c0e", 30, 130]} />
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[20, 30, 10]} intensity={1.6} castShadow />
+        <Suspense fallback={null}>
+          <Environment>
+            <Lightformer intensity={1.8} position={[0, 12, 0]} scale={[30, 30, 1]} />
+            <Lightformer intensity={0.8} color="#ffb020" position={[-20, 4, 0]} rotation-y={Math.PI / 2} scale={[40, 3, 1]} />
+          </Environment>
+          <TrackSurface geom={geom} />
+          <Car vehicle={vehicle} poseRef={poseRef} chase={mode === "chase"} />
+        </Suspense>
+        <mesh rotation-x={-Math.PI / 2} position={[0, -0.02, 0]} receiveShadow>
+          <planeGeometry args={[400, 400]} />
+          <meshStandardMaterial color="#141a16" roughness={1} />
+        </mesh>
+        {mode === "orbit" ? (
+          <>
+            <OrbitControls
+              ref={controls}
+              makeDefault
+              enablePan={false}
+              minDistance={3}
+              maxDistance={60}
+              maxPolarAngle={Math.PI / 2.05}
+            />
+            <OrbitFollow poseRef={poseRef} controls={controls} />
+          </>
+        ) : null}
+      </Canvas>
+      <div className="absolute right-2 top-2 flex gap-1">
+        {(["chase", "orbit"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className={`rounded-sm border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] ${
+              mode === m
+                ? "border-primary bg-primary/15 text-primary"
+                : "border-border bg-background/80 text-muted-foreground"
+            }`}
+          >
+            {m === "chase" ? "chase cam" : "360° orbit"}
+          </button>
+        ))}
+      </div>
+      <div className="pointer-events-none absolute bottom-2 left-2 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+        {mode === "chase" ? "camera follows the car" : "drag to look around · scroll to zoom"}
+      </div>
+    </div>
   );
 }
 
