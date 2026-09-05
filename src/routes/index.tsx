@@ -254,8 +254,8 @@ function Dashboard() {
           </section>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-px bg-border">
-          <div className="max-h-[52vh] min-h-[260px] bg-background">
+        <aside className="flex min-w-0 flex-col gap-px bg-border lg:min-h-0 lg:overflow-hidden">
+          <div className="max-h-[52vh] min-h-[260px] shrink-0 overflow-y-auto bg-background">
             <PartPanel
               vehicle={sim.vehicle}
               partId={selectedPart}
