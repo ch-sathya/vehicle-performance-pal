@@ -156,9 +156,9 @@ function Dashboard() {
         </div>
       </header>
 
-      <main className="grid flex-1 gap-px bg-border lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="flex min-w-0 flex-col gap-px bg-border">
-          <section className="relative h-[46vh] min-h-[320px] bg-background">
+      <main className="grid flex-1 gap-px bg-border lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_340px] lg:overflow-hidden">
+        <div className="flex min-w-0 flex-col gap-px bg-border lg:min-h-0 lg:overflow-y-auto">
+          <section className="relative h-[46vh] min-h-[320px] shrink-0 bg-background">
             <CarViewer
               vehicle={sim.vehicle}
               setup={sim.setup}
